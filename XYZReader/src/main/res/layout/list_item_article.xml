@@ -61,7 +61,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:padding="8dp"
-            android:textColor="@color/black"
+            android:textColor="@color/primary_text"
             tools:text="Subtitle" />
 
     </LinearLayout>
