@@ -29,4 +29,5 @@
     <color name="light_gray">#ffe0e0e0</color>
     <color name="black">@android:color/black</color>
     <color name="white">@android:color/white</color>
+    <color name="article_byline">#8fff</color>
 </resources>
