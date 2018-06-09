@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -206,7 +207,7 @@ public class ArticleDetailFragment extends Fragment implements
         TextView titleView = mRootView.findViewById(R.id.article_title);
         TextView bylineView = mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        TextView bodyView = mRootView.findViewById(R.id.article_body);
+        final TextView bodyView = mRootView.findViewById(R.id.article_body);
 
 
         bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Roboto-Regular.ttf"));
@@ -235,7 +236,21 @@ public class ArticleDetailFragment extends Fragment implements
                                 + "</font>"));
 
             }
-            //bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+            new AsyncTask<Void, Void, String>() {
+                @Override
+                protected String doInBackground(Void... params) {
+                    return Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY)
+                            .replaceAll("(\r\n|\n)", "<br />"))
+                            .toString();
+                }
+
+                @Override
+                protected void onPostExecute(String bodyText) {
+                    super.onPostExecute(bodyText);
+                    bodyView.setText(bodyText);
+                }
+            }.execute();
+
             Glide.with(this)
                     .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
                     .listener(new RequestListener<Drawable>() {
@@ -261,7 +276,7 @@ public class ArticleDetailFragment extends Fragment implements
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");
             bylineView.setText("N/A");
-            bodyView.setText("N/A");
+            bodyView.setText("Downloading...");
         }
     }
 
